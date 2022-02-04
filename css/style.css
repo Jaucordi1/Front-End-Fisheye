@@ -23,6 +23,8 @@ header {
 
 h1 {
     color: #901C1C;
+    font-size: 36px;
+    line-height: 47px;
     margin-right: 100px;
 }
 
@@ -57,6 +59,7 @@ h1 {
 .photographer_section article a h2 {
     color: #D3573C;
     font-size: 36px;
+    line-height: 47px;
 }
 
 .photographer_section article a img {
@@ -74,12 +77,18 @@ h1 {
 
 .photographer_section article p .location {
     color: #901C1C;
+    font-size: 13px;
+    line-height: 17px;
 }
 
 .photographer_section article p .tagLine {
-    color: #312E2E;
+    color: #000000;
+    font-size: 10px;
+    line-height: 13px;
 }
 
 .photographer_section article p .cost {
-    color: #525252;
+    color: #757575;
+    font-size: 9px;
+    line-height: 12px;
 }
