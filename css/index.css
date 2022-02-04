@@ -1,0 +1,71 @@
+@import 'style.css';
+@import 'logo.css';
+@import 'photographer.css';
+
+h1 {
+	color        : #901C1C;
+	font-size    : 36px;
+	line-height  : 47px;
+	margin-right : 100px;
+}
+
+#main {
+	height: calc(100vh - 130px);
+	display         : flex;
+	flex-flow       : column nowrap;
+	justify-content : center;
+	align-items     : stretch;
+}
+
+.photographer_section {
+	display               : grid;
+	grid-template-columns : 1fr 1fr 1fr;
+	gap                   : 70px;
+}
+
+.photographer_section article {
+	justify-self    : center;
+	display         : flex;
+	justify-content : center;
+	align-items     : center;
+	flex-direction  : column;
+}
+.photographer_section article > * {
+	text-align : center;
+}
+
+.photographer_section article a {
+	text-decoration : none;
+}
+.photographer_section article a h2 {
+	color       : #D3573C;
+	font-size   : 36px;
+	line-height : 47px;
+}
+.photographer_section article a img {
+	height          : 200px;
+	width           : 200px;
+	object-fit      : cover;
+	object-position : center center;
+	border-radius   : 50%;
+}
+
+.photographer_section article p {
+	display   : flex;
+	flex-flow : column nowrap;
+}
+.photographer_section article p .location {
+	color       : #901C1C;
+	font-size   : 13px;
+	line-height : 17px;
+}
+.photographer_section article p .tagLine {
+	color       : #000000;
+	font-size   : 10px;
+	line-height : 13px;
+}
+.photographer_section article p .cost {
+	color       : #757575;
+	font-size   : 9px;
+	line-height : 12px;
+}
