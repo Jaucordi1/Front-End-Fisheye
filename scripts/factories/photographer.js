@@ -7,6 +7,7 @@ export function photographerFactory(data) {
 		// Creating photographer picture
 		const imgEl = document.createElement('img');
 		imgEl.setAttribute('src', picture);
+		imgEl.setAttribute('alt', '');
 
 		// Creating photographer name
 		const nameEl       = document.createElement('h2');
