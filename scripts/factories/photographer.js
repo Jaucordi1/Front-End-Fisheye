@@ -76,5 +76,14 @@ export function photographerFactory(data) {
 		return articleEl;
 	}
 
-	return { name, picture, getUserCardDOM };
+	function getUserHeaderDOM() {
+		const titleEl = document.createElement('h1');
+		const locationEl = getUserLocationDOM();
+		const tagLineEl = getUserTagLineDOM();
+		const pictureEl = getUserPictureDOM();
+
+		return { titleEl, locationEl, tagLineEl, pictureEl };
+	}
+
+	return { name, picture, getUserCardDOM, getUserHeaderDOM };
 }
