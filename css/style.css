@@ -13,12 +13,11 @@ body {
     margin: 0;
 }
 
-
 header {
     display: flex;
-    flex-direction: row;
+    flex-flow: row nowrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     height: 90px;
 }
 
