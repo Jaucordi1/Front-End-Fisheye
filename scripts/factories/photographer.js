@@ -1,11 +1,14 @@
 export function photographerFactory(data) {
 	const { id, name, tagline, city, country, price, portrait } = data;
 	const picture = `assets/photographers/${portrait}`;
+	const minPicture = `assets/photographers/min/${portrait}`;
 
 	function getUserPictureDOM() {
 		// Creating photographer picture
 		const imgEl = document.createElement('img');
 		imgEl.setAttribute('src', picture);
+		imgEl.setAttribute('srcset', `${minPicture} 300w, ${picture} 6000w`);
+		imgEl.setAttribute('sizes', `(max-width: 500px) 300px, 6000px`);
 		imgEl.setAttribute('alt', '');
 
 		return imgEl;
@@ -78,12 +81,48 @@ export function photographerFactory(data) {
 
 	function getUserHeaderDOM() {
 		const titleEl = document.createElement('h1');
+		titleEl.textContent = name;
+		titleEl.setAttribute('tabindex', window.useTabIndex());
+
 		const locationEl = getUserLocationDOM();
 		const tagLineEl = getUserTagLineDOM();
 		const pictureEl = getUserPictureDOM();
 
-		return { titleEl, locationEl, tagLineEl, pictureEl };
+		// Wrapping photographer's name, location & tagLine into a div.photographer-information
+		const infoEl = document.createElement('div');
+		infoEl.classList.add('photograph-information');
+		infoEl.appendChild(titleEl);
+
+		const detailsEl = document.createElement('p');
+		detailsEl.classList.add('photograph-information-details');
+		detailsEl.setAttribute('tabindex', window.useTabIndex());
+		detailsEl.appendChild(locationEl);
+		detailsEl.appendChild(tagLineEl);
+		infoEl.appendChild(detailsEl);
+
+		pictureEl.setAttribute('tabindex', window.useTabIndex());
+		pictureEl.setAttribute('alt', name);
+
+		return { infoEl, pictureEl };
+	}
+	function getUserFloatingDetailsDOM(likes) {
+		const popularityEl = document.createElement('strong');
+		popularityEl.setAttribute('aria-label', `${likes} likes`);
+		popularityEl.textContent = `${likes} ♥`;
+
+		const pricingEl = document.createElement('strong');
+		pricingEl.setAttribute('aria-label', `${price} euro par jour`);
+		pricingEl.textContent = `${price}€ / jour`;
+
+		const floatingEl = document.createElement('div');
+		floatingEl.classList.add('likes-and-pricing');
+		floatingEl.setAttribute('tabindex', window.useTabIndex());
+
+		floatingEl.appendChild(popularityEl);
+		floatingEl.appendChild(pricingEl);
+
+		return floatingEl;
 	}
 
-	return { name, picture, getUserCardDOM, getUserHeaderDOM };
+	return { name, picture, getUserCardDOM, getUserHeaderDOM, getUserFloatingDetailsDOM };
 }
