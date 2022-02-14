@@ -1,12 +1,16 @@
 const defaultInitialTabIndex = 1;
 
-export default function init(initialTabIndex = 1) {
-	let tabIndex = typeof initialTabIndex === 'number' && !isNaN(initialTabIndex)
-				   ? initialTabIndex
-				   : defaultInitialTabIndex;
+export default function init(initialTabIndex = defaultInitialTabIndex, indexesToSkip = []) {
+	let tabIndex = initialTabIndex;
+	if (typeof initialTabIndex !== 'number' || isNaN(initialTabIndex))
+		tabIndex = defaultInitialTabIndex;
 
 	function useTabIndex() {
-		return (++tabIndex).toString(10);
+		const lastIndex = tabIndex;
+		do {
+			++tabIndex;
+		} while(indexesToSkip.includes(tabIndex) || tabIndex <= lastIndex);
+		return tabIndex.toString(10);
 	}
 
 	window.useTabIndex = useTabIndex.bind(this);
