@@ -1,0 +1,103 @@
+.combo {
+	display   : block;
+	min-width : 13ch;
+	max-width : 30ch;
+	width     : auto;
+	position  : relative;
+	color     : var(--color-white);
+}
+.combo::after {
+	border-bottom  : 2px solid var(--color-white);
+	border-right   : 2px solid var(--color-white);
+	content        : '';
+	display        : block;
+	height         : 12px;
+	pointer-events : none;
+	position       : absolute;
+	right          : 16px;
+	top            : 50%;
+	transform      : translate(0, -65%) rotate(45deg);
+	width          : 12px;
+}
+
+.combo-input {
+	background-color : var(--color-primary-bg);
+	border           : none;
+	border-radius    : 4px;
+	display          : block;
+	font-size        : 1em;
+	min-height       : calc(1.4em + 26px);
+	padding          : 14px;
+	text-align       : left;
+	width            : 100%;
+	cursor           : pointer;
+	user-select      : none;
+}
+.open .combo-input {
+	border-radius : 4px 4px 0 0;
+}
+.combo-input:focus {
+	border-color : var(--color-primary);
+	outline      : 4px solid transparent;
+}
+
+.combo-label {
+	display     : block;
+	font-size   : 20px;
+	font-weight : 100;
+}
+
+.combo-menu {
+	background-color : var(--color-primary-bg);
+	border           : none;
+	display          : none;
+	max-height       : 300px;
+	overflow-y       : auto;
+	left             : 0;
+	position         : absolute;
+	top              : 0;
+	width            : 100%;
+	z-index          : 100;
+	border-radius    : 4px;
+}
+.open .combo-menu {
+	display : block;
+}
+
+.combo-option {
+	padding     : 14px;
+	cursor      : pointer;
+	position    : relative;
+	user-select : none;
+}
+.combo-option:not(:first-child)::before {
+	content          : '';
+	position         : absolute;
+	top              : -.5px;
+	left             : 5%;
+	right            : 5%;
+	background-color : rgba(255, 255, 255, .7);
+	height           : 1px;
+}
+.combo-option:hover {
+	background-color : rgb(0 0 0 / 10%);
+}
+.combo-option.option-current {
+	outline        : none;
+	outline-offset : -3px;
+}
+.combo-option[aria-selected='true'] {
+	padding-right : 30px;
+	position      : relative;
+}
+.combo-option[aria-selected='true']::after {
+	border-bottom : 2px solid var(--color-white);
+	border-right  : 2px solid var(--color-white);
+	content       : '';
+	height        : 16px;
+	position      : absolute;
+	right         : 15px;
+	top           : 40%;
+	transform     : translate(0, -50%) rotate(45deg);
+	width         : 8px;
+}
