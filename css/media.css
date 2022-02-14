@@ -1,0 +1,108 @@
+.photograph-media {
+	display               : grid;
+	grid-template-columns : 1fr 1fr 1fr;
+	grid-auto-rows        : 350px;
+	column-gap            : 5em;
+	row-gap               : 2em;
+	justify-items         : center;
+
+	grid-auto-columns     : 1fr;
+	flex-grow             : 1;
+
+	margin-bottom         : 4em;
+}
+.photograph-media > article {
+	width  : 100%;
+	height : 100%;
+}
+.photograph-media > article > figure {
+	--radius      : 5px;
+	width         : 100%;
+	height        : 100%;
+	border-radius : var(--radius);
+	overflow      : hidden;
+}
+.photograph-media > article > figure > a {
+	display         : block;
+	width           : 100%;
+	height          : calc(100% - 50px);
+	text-decoration : none;
+	cursor          : pointer;
+}
+.photograph-media > article > figure > a > :first-child {
+	border-radius   : var(--radius);
+	width           : 100%;
+	height          : 100%;
+	object-fit      : cover;
+	object-position : center center;
+}
+.photograph-media > article > figure > figcaption {
+	color           : #901C1C;
+	display         : flex;
+	flex-flow       : row nowrap;
+	justify-content : space-between;
+	margin-top      : .5em;
+}
+.photograph-media > article > figure > figcaption > .likes {
+	display         : flex;
+	flex-flow       : row nowrap;
+	justify-content : center;
+	align-items     : center;
+}
+.photograph-media > article > figure > figcaption > .likes > img {
+	margin-left : .5em;
+}
+.photograph-media > article > figure > figcaption > .likes > strong {
+	font-weight : bolder;
+}
+
+.photograph-media > article.opened {
+	--padding        : 50px;
+	padding          : var(--padding) var(--padding) 0 var(--padding);
+
+	position         : fixed;
+	top              : 0;
+	bottom           : 0;
+	left             : 0;
+	right            : 0;
+	z-index          : 1000;
+	background-color : var(--color-white);
+	overflow         : hidden;
+
+	display          : flex;
+	flex-flow        : row wrap;
+	justify-content  : center;
+	align-items      : center;
+}
+.photograph-media > article.opened > figure {
+	--size     : min(100vh, 100vw);
+	max-width  : var(--size);
+	max-height : var(--size);
+}
+.photograph-media > article.opened > figure > a {
+	cursor : default;
+}
+.photograph-media > article.opened > .left-arrow,
+.photograph-media > article.opened > .right-arrow {
+	display         : flex;
+	flex-flow       : column nowrap;
+	justify-content : center;
+
+	cursor          : pointer;
+	margin          : 0 2em;
+}
+.photograph-media > article.opened > .left-arrow { left : 0; }
+.photograph-media > article.opened > .right-arrow { right : 0; }
+.photograph-media > article.opened > .right-arrow > img {
+	transform : rotate(180deg);
+}
+.photograph-media > article.opened > .close {
+	position  : fixed;
+	top       : 60px;
+
+	width     : 30px;
+	height    : 30px;
+	cursor    : pointer;
+
+	transform : translateX(calc(.5 * min(100vh, 100vw) + 40px));
+}
