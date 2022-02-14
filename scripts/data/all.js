@@ -1,5 +1,5 @@
 export async function getData() {
-	const res = await fetch('/data/photographers.json');
+	const res = await fetch('data/photographers.json');
 	const json = await res.json();
 
 	return {
