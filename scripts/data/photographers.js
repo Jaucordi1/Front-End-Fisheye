@@ -1,3 +1,18 @@
+/**
+ * @typedef {{
+ * 		id: number,
+ * 		name: string,
+ * 		city: string,
+ * 		country: string,
+ * 		tagline: string,
+ * 		price: number,
+ * 		portrait: string
+ * }} IPhotographer
+ */
+
+/**
+ * @return {Promise<{photographers: IPhotographer[]}>}
+ */
 export async function getPhotographers() {
 	// Lazy-load data loader & load data
 	// TODO Load only photographers data from back-end
@@ -9,6 +24,10 @@ export async function getPhotographers() {
 	};
 }
 
+/**
+ * @param id
+ * @return {Promise<{photographer: (IPhotographer|null)}>}
+ */
 export async function getPhotographerById(id) {
 	// Load all photographers & find the one with given id
 	const { photographers } = await getPhotographers();
