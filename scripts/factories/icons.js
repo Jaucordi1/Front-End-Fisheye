@@ -76,12 +76,10 @@ export default function iconsFactory() {
 	 * @param {Icons} name
 	 */
 	function getIconByName(name) {
-		switch (name) {
-			case 'close':
-				return getIconDOM(icons[name]);
-			default:
-				throw new Error(`Icon '${name}' does NOT exists!`);
-		}
+		const iconSpec = icons[name];
+		if (!iconSpec) throw new Error(`Icon '${name}' does NOT exists!`);
+
+		return getIconDOM(iconSpec);
 	}
 
 	return getIconByName;
