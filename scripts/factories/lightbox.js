@@ -1,3 +1,5 @@
+import iconsFactory from './icons.js';
+
 /**
  * @typedef {{
  *     actualIndex?: number,
@@ -16,6 +18,10 @@
  * @return {ILightbox}
  */
 export default function lightboxFactory(container, medias) {
+	function getMediaIndexFromId(id) {
+		return medias.findIndex((media) => media.id === id);
+	}
+
 	/** @var {ILightbox} lightbox */
 	const lightbox = {
 		actualIndex: undefined,
@@ -24,32 +30,122 @@ export default function lightboxFactory(container, medias) {
 		opened     : false,
 	};
 
+	function getLeftArrowDOM() {
+		const iconEl = document.createElement('img');
+		iconEl.setAttribute('src', 'assets/icons/arrow-left.svg');
+		iconEl.setAttribute('alt', '');
+
+		const arrowEl = document.createElement('a');
+		arrowEl.classList.add('left-arrow');
+		arrowEl.setAttribute('aria-label', 'Previous image');
+		arrowEl.setAttribute('tabindex', '4');
+		arrowEl.appendChild(iconEl);
+
+		return arrowEl;
+	}
+	function getRightArrowDOM() {
+		const iconEl = document.createElement('img');
+		iconEl.setAttribute('src', 'assets/icons/arrow-left.svg');
+		iconEl.setAttribute('alt', '');
+
+		const arrowEl = document.createElement('a');
+		arrowEl.classList.add('right-arrow');
+		arrowEl.setAttribute('aria-label', 'Next image');
+		arrowEl.setAttribute('tabindex', '5');
+		arrowEl.appendChild(iconEl);
+
+		return arrowEl;
+	}
+	function getCloseDOM() {
+		const getIconDOM = iconsFactory();
+		const iconEl = getIconDOM('close');
+		iconEl.setAttribute('alt', '');
+
+		const closeEl = document.createElement('a');
+		closeEl.classList.add('close');
+		closeEl.setAttribute('aria-label', 'Close dialog');
+		closeEl.setAttribute('tabindex', '6');
+		closeEl.appendChild(iconEl);
+
+		return closeEl;
+	}
+
+	/**
+	 * @param {KeyboardEvent} event
+	 */
+	function handleKey(event) {
+		const { code, altKey, currentTarget } = event;
+		console.log('[KEYBOARD]', code, currentTarget);
+		switch (code) {
+			case 'Enter':
+			case 'Space':
+				if (currentTarget.tagName === 'A') {
+					if (currentTarget.classList.contains('left-arrow')) {
+						prevMedia();
+					} else if (currentTarget.classList.contains('right-arrow')) {
+						nextMedia();
+					} else if (currentTarget.classList.contains('close')){
+						const mediaNavEl = lightbox.actualMedia;
+						console.log(mediaNavEl, mediaNavEl.firstElementChild.firstElementChild);
+						lightbox.setIndex(-1);
+						mediaNavEl.firstElementChild.firstElementChild.focus();
+					}
+				}
+				break;
+			case 'ArrowLeft':
+				if (lightbox.opened) prevMedia();
+				break;
+			case 'ArrowRight':
+				if (lightbox.opened) nextMedia();
+				break;
+			case 'Tab':
+				if (lightbox.opened && !altKey) {
+					console.log('Loop focus', lightbox.actualMedia);
+					lightbox.actualMedia.focus();
+				}
+				break;
+			default:
+				console.log(code + ' key pressed');
+				break;
+		}
+	}
 	function addControls() {
 		const leftArrowEl  = getLeftArrowDOM();
-		leftArrowEl.addEventListener('click', (event) => {
-			event.preventDefault();
-			let newIdx = lightbox.actualIndex - 1;
-			if (newIdx < 0) newIdx = medias.length - 1;
-			lightbox.setIndex(newIdx);
-		});
+		leftArrowEl.addEventListener('click', () => prevMedia());
+		leftArrowEl.addEventListener('keypress', handleKey);
 
 		const rightArrowEl = getRightArrowDOM();
-		rightArrowEl.addEventListener('click', (event) => {
-			event.preventDefault();
-			let newIdx = lightbox.actualIndex + 1;
-			if (newIdx >= medias.length) newIdx = 0;
-			lightbox.setIndex(newIdx);
-		});
+		rightArrowEl.addEventListener('click', () => nextMedia());
+		rightArrowEl.addEventListener('keypress', handleKey);
 
 		const closeEl = getCloseDOM();
-		closeEl.addEventListener('click', (event) => {
-			event.preventDefault();
-			lightbox.setIndex(-1);
-		})
+		closeEl.addEventListener('click', () => lightbox.setIndex(-1));
+		closeEl.addEventListener('keypress', handleKey);
 
 		lightbox.actualMedia.prepend(leftArrowEl);
 		lightbox.actualMedia.appendChild(rightArrowEl);
 		lightbox.actualMedia.appendChild(closeEl);
+	}
+
+	function prevMedia() {
+		console.debug('[LIGHTBOX] Previous media triggered');
+
+		let prevIdx = lightbox.actualIndex - 1;
+		if (prevIdx < 0) prevIdx = medias.length - 1;
+
+		const media = medias[prevIdx];
+
+		lightbox.openMedia(media.id);
+	}
+	function nextMedia() {
+		console.debug('[LIGHTBOX] Next media triggered');
+
+		let nextIdx = lightbox.actualIndex + 1;
+		if (nextIdx >= medias.length) nextIdx = 0;
+
+		const media = medias[nextIdx];
+
+		lightbox.openMedia(media.id);
 	}
 
 	lightbox.setIndex = (idx) => {
@@ -60,10 +156,20 @@ export default function lightboxFactory(container, medias) {
 		if (lightbox.actualIndex !== undefined) {
 			lightbox.actualMedia.classList.remove('opened');
 			lightbox.actualMedia.removeAttribute('aria-label');
+			/** Reset tabindexes! */
+			lightbox.actualMedia.removeAttribute('tabindex');
+			const oldFigLink = lightbox.actualMedia.querySelector('figure > a');
+			oldFigLink.setAttribute('tabindex', '0');
+			oldFigLink.setAttribute('aria-label', `${medias[lightbox.actualIndex].title}, closeup view`);
+			oldFigLink.firstElementChild.removeAttribute('tabindex');
+			lightbox.actualMedia.querySelector('figure > figcaption > h2').setAttribute('tabindex', '0');
+			/** Reset tabindexes! */
+
 			lightbox.actualMedia.querySelector('.left-arrow')?.remove();
 			lightbox.actualMedia.querySelector('.right-arrow')?.remove();
 			lightbox.actualMedia.querySelector('.close')?.remove();
 			lightbox.actualMedia.querySelector('figure > figcaption > .likes').style.display = 'flex';
+			lightbox.actualMedia.removeEventListener('keypress', handleKey);
 
 			// Pause video & reset currentTime if media is a video
 			const videoEl = lightbox.actualMedia.querySelector('video');
@@ -86,72 +192,46 @@ export default function lightboxFactory(container, medias) {
 
 		addControls();
 
+		/** Switch opened media to lightbox style */
 		lightbox.actualMedia.classList.add('opened');
+
+		/** Define opened media aria-label to define new root zone */
 		lightbox.actualMedia.setAttribute('aria-label', 'image closeup view');
+
+		/** Makes tabindexes navigates in loop through the current opened media! */
+		lightbox.actualMedia.setAttribute('tabindex', '1');
+		const figLink = lightbox.actualMedia.querySelector('figure > a');
+		figLink.removeAttribute('tabindex');
+		figLink.removeAttribute('aria-label');
+		figLink.firstElementChild.setAttribute('tabindex', '2');
+		lightbox.actualMedia.querySelector('figure > figcaption > h2').setAttribute('tabindex', '3');
+		/** Makes tabindexes navigates in loop through the current opened media! */
+
+		/** Hide likes in lightbox view */
 		lightbox.actualMedia.querySelector('figure > figcaption > .likes').style.display = 'none';
+
+		lightbox.actualMedia.addEventListener('keypress', event => handleKey(event));
 
 		return true;
 	}
 
-	function closeLightbox() {
-		lightbox.opened = false;
-		document.body.style.overflow = 'auto';
-	}
 	function openLightbox() {
 		lightbox.opened = true;
-		document.body.style.overflow = 'hidden';
+		document.body.style.overflow = 'hidden'; // Force whole document to hide scrollbars
 		lightbox.actualMedia.focus();
+	}
+	function closeLightbox() {
+		lightbox.opened = false;
+		document.body.style.overflow = 'auto'; // restore whole document scrolling behavior
 	}
 
 	/**
 	 * @param {number} id
 	 */
 	lightbox.openMedia = (id) => {
-		const oldIndex = lightbox.actualIndex;
-		const foundIndex = medias.findIndex((media) => media.id === id);
-		if (!lightbox.setIndex(foundIndex)) return
-
-		console.log('Switching media from', oldIndex, 'to', lightbox.actualIndex);
-
-		openLightbox();
+		if (lightbox.setIndex(getMediaIndexFromId(id)))
+			openLightbox();
 	};
-
-	function getLeftArrowDOM() {
-		const iconEl = document.createElement('img');
-		iconEl.setAttribute('src', 'assets/icons/arrow-left.svg');
-		iconEl.setAttribute('alt', '');
-
-		const arrowEl = document.createElement('a');
-		arrowEl.classList.add('left-arrow');
-		arrowEl.setAttribute('aria-label', 'Previous media closeup view');
-		arrowEl.appendChild(iconEl);
-
-		return arrowEl;
-	}
-	function getRightArrowDOM() {
-		const iconEl = document.createElement('img');
-		iconEl.setAttribute('src', 'assets/icons/arrow-left.svg');
-		iconEl.setAttribute('alt', '');
-
-		const arrowEl = document.createElement('a');
-		arrowEl.classList.add('right-arrow');
-		arrowEl.setAttribute('aria-label', 'Next media closeup view');
-		arrowEl.appendChild(iconEl);
-
-		return arrowEl;
-	}
-	function getCloseDOM() {
-		const iconEl = document.createElement('img');
-		iconEl.setAttribute('src', 'assets/icons/close.svg');
-		iconEl.setAttribute('alt', '');
-
-		const closeEl = document.createElement('a');
-		closeEl.classList.add('close');
-		closeEl.setAttribute('aria-label', 'Close closeup view');
-		closeEl.appendChild(iconEl);
-
-		return closeEl;
-	}
 
 	return lightbox;
 }
