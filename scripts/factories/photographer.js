@@ -33,6 +33,7 @@ export function photographerFactory(data) {
 		// Creating photographer cost-per-day
 		const costEl = document.createElement('span');
 		costEl.classList.add('cost');
+		costEl.setAttribute('aria-label', `${price}€ par jour`);
 		costEl.textContent = `${price}€/jour`;
 
 		return costEl;
@@ -105,10 +106,16 @@ export function photographerFactory(data) {
 
 		return { infoEl, pictureEl };
 	}
-	function getUserFloatingDetailsDOM(likes) {
+
+	function getUserPopularityDOM(likes) {
 		const popularityEl = document.createElement('strong');
 		popularityEl.setAttribute('aria-label', `${likes} likes`);
 		popularityEl.textContent = `${likes} ♥`;
+
+		return popularityEl;
+	}
+	function getUserFloatingDetailsDOM(likes) {
+		const popularityEl = getUserPopularityDOM(likes);
 
 		const pricingEl = document.createElement('strong');
 		pricingEl.setAttribute('aria-label', `${price} euro par jour`);
@@ -124,5 +131,5 @@ export function photographerFactory(data) {
 		return floatingEl;
 	}
 
-	return { name, picture, getUserCardDOM, getUserHeaderDOM, getUserFloatingDetailsDOM };
+	return { name, picture, getUserCardDOM, getUserHeaderDOM, getUserFloatingDetailsDOM, getUserPopularityDOM };
 }
