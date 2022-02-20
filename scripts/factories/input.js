@@ -7,6 +7,7 @@ const defaultCallbacks = {
  * @typedef {'button' | 'checkbox' | 'color' | 'date' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'} HTMLInputType
  * @typedef {HTMLInputType | 'textarea' | 'select'} FormDataType
  *
+ * @typedef {(newValue: any, oldValue?: any) => boolean} ChangeCallback
  * @typedef {{
  *		name: string,
  *		value: any
@@ -19,15 +20,32 @@ const defaultCallbacks = {
  *		options?: ISelectOption[]
  * }} FormDataOptions
  * @typedef {Omit<FormDataOptions, 'options'> & Required<Pick<FormDataOptions, 'options'>>} SelectFormDataOptions
+ * @typedef {{
+ *     formData: HTMLDivElement,
+ *     label: HTMLLabelElement,
+ *     input: HTMLInputElement | HTMLTextAreaElement | HTMLDivElement
+ * }} IFormData
  */
 
-export function inputFactory() {
+/**
+ * @return {{
+ *		getListBoxDOM: (id: string, label: string, options: ISelectOption[], ChangeCallback) => {
+ *			listbox: HTMLDivElement,
+ *			label: HTMLLabelElement
+ *		},
+ *		getFormData: (opt: FormDataOptions, ChangeCallback) => {
+ *			formData: HTMLDivElement,
+ *			label: HTMLLabelElement,
+ *			input: (HTMLInputElement|HTMLTextAreaElement)
+ *		}
+ * }}
+ */
+export default function inputFactory() {
 	/**
-	 *
 	 * @param {string} id
 	 * @param {string} label
 	 * @param {ISelectOption[]} options
-	 * @param {(newValue: any, oldValue?: any) => boolean} onChange
+	 * @param {ChangeCallback} onChange
 	 * @return {{listbox: HTMLDivElement, label: HTMLLabelElement}}
 	 */
 	function getListBoxDOM(id, label, options, onChange) {
@@ -40,18 +58,6 @@ export function inputFactory() {
 		const comboEl = document.createElement('div');
 		comboEl.classList.add('combo');
 
-		function toggleListbox() {
-			comboEl.classList.toggle('open');
-		}
-		function openListbox() {
-			if (!comboEl.classList.contains('open'))
-				comboEl.classList.add('open');
-		}
-		function closeListbox() {
-			if (comboEl.classList.contains('open'))
-				comboEl.classList.remove('open');
-		}
-
 		const comboboxEl = document.createElement('div');
 		comboboxEl.classList.add('combo-input');
 		comboboxEl.setAttribute('id', 'listbox-' + id);
@@ -61,23 +67,35 @@ export function inputFactory() {
 		comboboxEl.setAttribute('aria-haspopup', 'listbox');
 		comboboxEl.setAttribute('aria-labelledby', 'listbox-' + id + '-label');
 		comboboxEl.setAttribute('tabindex', window.useTabIndex());
-		comboboxEl.addEventListener('click', toggleListbox);
-		comboboxEl.addEventListener('touchstart', openListbox);
-		comboboxEl.addEventListener('touchend', closeListbox);
-		comboboxEl.addEventListener('keypress', (event) => {
-			const { code } = event;
-			switch (code) {
-				case 'Enter':
-					return openListbox();
-				case 'Space':
-					event.preventDefault();
-					return openListbox();
-				default:
-					console.log('CODE :', code);
-			}
-		});
 		comboboxEl.textContent = options[0].name;
 
+		const listboxEl = document.createElement('div');
+		listboxEl.classList.add('combo-menu');
+		listboxEl.setAttribute('id', 'listbox-' + id + '-menu');
+		listboxEl.setAttribute('role', 'listbox');
+		listboxEl.setAttribute('aria-labelledby', 'listbox-' + id + '-label');
+		listboxEl.setAttribute('tabindex', window.useTabIndex());
+
+		function focusCurrent() {
+			const actual = listboxEl.querySelector('.current-selected');
+			if (actual) actual.focus();
+		}
+		function toggleListbox() {
+			comboEl.classList.toggle('open');
+			if (comboEl.classList.contains('open')) {
+				focusCurrent();
+			}
+		}
+		function openListbox() {
+			if (!comboEl.classList.contains('open')) {
+				comboEl.classList.add('open');
+				focusCurrent();
+			}
+		}
+		function closeListbox() {
+			if (comboEl.classList.contains('open'))
+				comboEl.classList.remove('open');
+		}
 		function clearOptions() {
 			for (const child of listboxEl.childNodes) {
 				child.classList.remove('current-selected');
@@ -112,13 +130,16 @@ export function inputFactory() {
 
 			closeListbox();
 		}
-
-		const listboxEl = document.createElement('div');
-		listboxEl.classList.add('combo-menu');
-		listboxEl.setAttribute('id', 'listbox-' + id + '-menu');
-		listboxEl.setAttribute('role', 'listbox');
-		listboxEl.setAttribute('aria-labelledby', 'listbox-' + id + '-label');
-		listboxEl.setAttribute('tabindex', window.useTabIndex());
+		function nextOption(idx) {
+			const nextIdx = idx >= options.length - 1 ? 0 : (idx + 1);
+			const el = listboxEl.childNodes[nextIdx];
+			if (el) el.focus();
+		}
+		function prevOption(idx) {
+			const prevIdx = idx <= 0 ? (options.length - 1) : (idx - 1);
+			const el = listboxEl.childNodes[prevIdx];
+			if (el) el.focus();
+		}
 
 		for (const i in options) {
 			const { name, value } = options[i];
@@ -127,9 +148,34 @@ export function inputFactory() {
 			optionEl.classList.add('combo-option');
 			optionEl.setAttribute('id', 'listbox-' + id + '-item-' + (i + 1));
 			optionEl.setAttribute('role', 'option');
+			optionEl.setAttribute('tabindex', window.useTabIndex());
 			optionEl.dataset.value = value;
 			optionEl.textContent   = name;
 			optionEl.addEventListener('click', (event) => selectOption(event.currentTarget));
+			optionEl.addEventListener('keypress', (event) => {
+				console.log('OPT LISTENER');
+				event.preventDefault();
+				const { code } = event;
+
+				switch (code) {
+					case 'ArrowUp':
+						prevOption(i);
+						break;
+					case 'ArrowDown':
+						nextOption(i);
+						break;
+					case 'Enter':
+						if (event.currentTarget.classList.contains('combo-option'))
+							selectOption(event.currentTarget);
+						break;
+					default:
+						console.log('Doing nothing for key :', code);
+						break;
+				}
+
+				// Focus again combo-input
+				event.currentTarget.parentElement.previousElementSibling.focus();
+			});
 
 			listboxEl.appendChild(optionEl);
 		}
@@ -139,13 +185,34 @@ export function inputFactory() {
 		comboEl.appendChild(comboboxEl);
 		comboEl.appendChild(listboxEl);
 
+		comboboxEl.addEventListener('click', toggleListbox);
+		comboboxEl.addEventListener('keypress', (event) => {
+			const { code } = event;
+			switch (code) {
+				case 'Enter':
+					if (!event.currentTarget.classList.contains('combo-option'))
+						return openListbox();
+					break;
+				case 'Space':
+					event.preventDefault();
+					return openListbox();
+				default:
+					console.log('CODE :', code);
+					break;
+			}
+		});
+
 		return { label: labelEl, listbox: comboEl };
 	}
 
 	/**
 	 * @param {FormDataOptions} opt
 	 * @param {(newValue: any, oldValue?: any) => boolean} onChange
-	 * @return {{ formData: HTMLDivElement, label: HTMLLabelElement, input: HTMLInputElement | HTMLTextAreaElement }}
+	 * @return {{
+	 * 		formData: HTMLDivElement,
+	 * 		label: HTMLLabelElement,
+	 * 		input: HTMLInputElement | HTMLTextAreaElement | HTMLDivElement
+	 * }}
 	 */
 	function getFormData(opt, onChange) {
 		let { id, label, type, defaultValue, options } = opt;
@@ -178,16 +245,6 @@ export function inputFactory() {
 			case 'textarea':
 				inputEl = document.createElement('textarea');
 				break;
-			case 'select':
-				inputEl = document.createElement('select');
-				for (const { name, value } of options) {
-					const optionEl = document.createElement('option');
-					optionEl.setAttribute('value', value);
-					optionEl.textContent = name;
-
-					inputEl.appendChild(optionEl);
-				}
-				break;
 			case 'button':
 			case 'checkbox':
 			case 'color':
@@ -219,6 +276,8 @@ export function inputFactory() {
 		inputEl.setAttribute('name', id);
 		inputEl.setAttribute('value', defaultValue);
 		inputEl.setAttribute('tabindex', window.useTabIndex());
+
+		inputEl.addEventListener('change', (event) => onChange(event.currentTarget.value));
 
 		containerEl.appendChild(labelEl);
 		containerEl.appendChild(inputEl);
