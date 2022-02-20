@@ -27,6 +27,7 @@
 	margin          : auto 0 auto auto;
 }
 .photograph-header .photograph-information {
+	font-size       : 1.5em;
 	display         : flex;
 	flex-flow       : column nowrap;
 	justify-content : center;
@@ -37,12 +38,12 @@
 	font-size : 4em;
 }
 .photograph-header .photograph-information .photograph-information-details {
-	display: flex;
-	flex-flow: column nowrap;
+	display   : flex;
+	flex-flow : column nowrap;
 }
 .photograph-header .photograph-information .location {
 	color         : #901C1C;
-	font-size     : 1.5em;
+	font-size     : 2em;
 	margin-bottom : .5em;
 }
 
@@ -57,7 +58,7 @@
 }
 
 .likes-and-pricing {
-	font-size        : 1.5em;
+	font-size        : 2.5em;
 
 	position         : fixed;
 	bottom           : 0;
