@@ -1,8 +1,10 @@
+import initAccessibility       from '../utils/accessibility.js';
 import { photographerFactory } from '../factories/photographer.js';
 import { mediaFactory }        from '../factories/media.js';
-import { inputFactory }        from '../factories/input.js';
-import initAccessibility       from '../utils/accessibility.js';
+import inputFactory            from '../factories/input.js';
 import lightboxFactory         from '../factories/lightbox.js';
+// import imageLoader             from '../utils/imageLoader.js';
+import { getContactForm }      from '../utils/contactForm.js';
 
 /**
  * @param {IPhotographer} photographer
@@ -17,6 +19,20 @@ function displayHeaderData(photographer) {
 
 	photographerHeaderEl.prepend(infoEl);
 	photographerHeaderEl.appendChild(pictureEl);
+
+	displayContactForm(photographer);
+}
+
+/**
+ * @param {IPhotographer} photographer
+ */
+function displayContactForm(photographer) {
+	const modalContainerEl = document.getElementById('contact_modal');
+	const modalEl          = getContactForm(photographer, ({ toPhotographer, ...data }) => {
+		console.log(`Contact sent to photographer '${toPhotographer}' with data :`, data);
+	});
+
+	modalContainerEl.appendChild(modalEl);
 }
 
 /**
@@ -28,10 +44,10 @@ function displayFloatingData(photographer, totalLikes) {
 	const { getUserFloatingDetailsDOM } = photographerFactory(photographer);
 
 	// DOM elements
-	const mainEl     = document.getElementById('main');
-	const floatingEl = getUserFloatingDetailsDOM(totalLikes);
+	const photographHeader = document.querySelector('.photograph-header');
+	const floatingEl       = getUserFloatingDetailsDOM(totalLikes);
 
-	mainEl.appendChild(floatingEl);
+	photographHeader.insertAdjacentElement('afterend', floatingEl);
 }
 
 /**
@@ -81,14 +97,36 @@ function displayMediasData(photographer, medias, lightboxHelper) {
 	// Creating DOM medias
 	let likesCounter = 0;
 	medias.forEach((media) => {
-		likesCounter += media.likes || 0;
-		const mediaModel   = mediaFactory(photographer, media);
-		const mediaCardDOM = mediaModel.getMediaCardDOM((event) => {
-			event.preventDefault();
-			console.log('CLICK IMG LINK :', media.id);
+		likesCounter += media.likes;
+
+		// Get
+		const mediaModel = mediaFactory(photographer, media);
+		const mediaDOM   = mediaModel.getMediaCardDOM(() => {
 			lightboxHelper.openMedia(media.id);
 		});
-		mediasSection.appendChild(mediaCardDOM.container);
+
+		mediasSection.appendChild(mediaDOM.container);
+
+		function registerLikeEvent(container) {
+			container.addEventListener('click', () => {
+				// Increment individual & total likes counter
+				media.likes++;
+				likesCounter++;
+
+				// Generate a new likes DOM for given media
+				const updatedModel = mediaFactory(photographer, media);
+				const newLikesDOM  = updatedModel.getLikesDOM();
+
+				// Replace old with new individual media likes DOM
+				container.replaceWith(newLikesDOM.container);
+
+				// Replace old with new total likes DOM
+				document.querySelector('.likes-and-pricing > :first-child').replaceWith(
+						photographerFactory(photographer).getUserPopularityDOM(likesCounter),
+				);
+			});
+		}
+		registerLikeEvent(mediaDOM.figure.caption.container.querySelector('.likes'));
 	});
 
 	return likesCounter;

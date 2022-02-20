@@ -10,48 +10,21 @@
 	</head>
 	<body>
 		<header>
-			<a href="./index.html" aria-labelledby="logo" tabindex="1">
+			<a href="./index.html" aria-labelledby="logo" tabindex="0">
 				<img class="logo" id="logo" src="./assets/images/logo.png" alt="Fisheye Home page" />
 			</a>
 		</header>
 
 		<main id="main">
 			<div class="photograph-header">
-				<button class="contact_button" tabindex="4">Contactez-moi</button>
+				<button class="contact_button" aria-haspopup="dialog" aria-controls="contact_modal" aria-expanded="false">Contactez-moi</button>
 			</div>
 			<div class="photograph-media-filters"></div>
 			<div class="photograph-media"></div>
 		</main>
+
+		<div id="contact_modal"></div>
+
 		<script type="module" src="./scripts/pages/photographer.js"></script>
-
-		<div id="contact_modal">
-			<div class="modal">
-				<header>
-					<h2>Contactez-moi</h2>
-					<img src="./assets/icons/close.svg" alt="Close modal" role="button" />
-				</header>
-				<form>
-					<div>
-						<label for="firstname">Prénom</label>
-						<input type="text" name="firstname" id="firstname" />
-					</div>
-					<div>
-						<label for="lastname">Nom</label>
-						<input type="text" name="lastname" id="lastname" />
-					</div>
-					<div>
-						<label for="email">Email</label>
-						<input type="text" name="email" id="email" />
-					</div>
-					<div>
-						<label for="message">Votre message</label>
-						<textarea id="message" name="message" rows="5"></textarea>
-					</div>
-
-					<button class="contact_button">Envoyer</button>
-				</form>
-			</div>
-		</div>
-		<script type="module" src="./scripts/utils/contactForm.js"></script>
 	</body>
 </html>
