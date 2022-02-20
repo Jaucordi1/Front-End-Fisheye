@@ -10,7 +10,8 @@ export default function init(initialTabIndex = defaultInitialTabIndex, indexesTo
 		do {
 			++tabIndex;
 		} while(indexesToSkip.includes(tabIndex) || tabIndex <= lastIndex);
-		return tabIndex.toString(10);
+		// return tabIndex.toString(10);
+		return '0';
 	}
 
 	window.useTabIndex = useTabIndex.bind(this);
