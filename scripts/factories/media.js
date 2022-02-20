@@ -2,8 +2,37 @@
  * @param {IPhotographer} photographer
  * @param {IMedia} data
  */
+import iconsFactory from './icons.js';
+
+/**
+ * @param {IPhotographer} photographer
+ * @param {IMedia} data
+ * @return {{
+ *		getMediaCardDOM: (onClick: (event: MouseEvent<HTMLAnchorElement> | KeyboardEvent<HTMLAnchorElement>) => void) => {
+ *			container: HTMLElement,
+ *			figure: {
+ *				container: HTMLElement,
+ *				caption: {
+ *					container: HTMLElement,
+ *					content: HTMLHeadingElement
+ *				},
+ *				media: {
+ *					link: HTMLAnchorElement,
+ *					media: (HTMLImageElement | HTMLVideoElement)
+ *				}
+ *			}
+ *		},
+ *		name: string,
+ *		media: string,
+ *		getLikesDOM: () => {
+ *		 	container: HTMLButtonElement,
+ *		 	icon: SVGSVGElement,
+ *		 	count: HTMLElement
+ *		},
+ * }}
+ */
 export function mediaFactory(photographer, data) {
-	const { id, photographerId, title, description, image, video, likes, date, price } = data;
+	const { /*id, photographerId, */title, description, image, video, likes/*, date, price*/ } = data;
 
 	const type   = image ? 'img' : 'video';
 	const folder = photographer.name.split(' ')[0];
@@ -22,32 +51,37 @@ export function mediaFactory(photographer, data) {
 	 * @return {HTMLVideoElement}
 	 */
 	function getVideoDOM() {
-		/** @type {HTMLVideoElement} */
-		const videoEl = document.createElement('video');
-		videoEl.setAttribute('src', media);
-		videoEl.defaultMuted = true;
-		videoEl.autoplay = false;
-		videoEl.loop = true;
-		videoEl.addEventListener('mouseover', (event) => {
+		function autoPlay() {
 			const article = videoEl.parentElement.parentElement.parentElement;
 			if (!article.classList.contains('opened') && videoEl.paused) {
 				videoEl.autoplay = true;
-				videoEl.play();
+				videoEl.play().catch(() => null);
 			}
-		});
-		videoEl.addEventListener('mouseout', (event) => {
+		}
+		function autoStop() {
 			const article = videoEl.parentElement.parentElement.parentElement;
 			if (!article.classList.contains('opened') && !videoEl.paused) {
 				videoEl.autoplay = false;
 				videoEl.pause();
 				videoEl.currentTime = 0;
 			}
-		});
-		videoEl.addEventListener('click', (event) => {
+		}
+
+		/** @type {HTMLVideoElement} */
+		const videoEl = document.createElement('video');
+		videoEl.setAttribute('src', media);
+		videoEl.defaultMuted = true;
+		videoEl.autoplay = false;
+		videoEl.loop = true;
+		videoEl.addEventListener('mouseover', () => autoPlay());
+		videoEl.addEventListener('touchstart', () => autoPlay());
+		videoEl.addEventListener('mouseout', () => autoStop());
+		videoEl.addEventListener('touchend', () => autoStop());
+		videoEl.addEventListener('click', () => {
 			const article = videoEl.parentElement.parentElement.parentElement;
 			if (article.classList.contains('opened')) {
 				if (videoEl.paused) {
-					videoEl.play();
+					videoEl.play().catch((err) => console.log('Oops, can\'t play video :', err));
 				} else {
 					videoEl.pause();
 				}
@@ -77,7 +111,7 @@ export function mediaFactory(photographer, data) {
 		return mediaEl;
 	}
 	/**
-	 * @param {(event: MouseEvent<HTMLAnchorElement>) => void} onClick
+	 * @param {(event: MouseEvent<HTMLAnchorElement> | KeyboardEvent<HTMLAnchorElement>) => void} onClick
 	 * @return {{
 	 *		link: HTMLAnchorElement,
 	 *		media: (HTMLImageElement|HTMLVideoElement)
@@ -92,6 +126,10 @@ export function mediaFactory(photographer, data) {
 			event.preventDefault();
 			onClick(event);
 		});
+		linkEl.addEventListener('keypress', (event) => {
+			event.preventDefault();
+			if (event.code === 'Enter') onClick(event);
+		});
 		linkEl.appendChild(mediaEl);
 
 		return { link: linkEl, media: mediaEl };
@@ -99,22 +137,21 @@ export function mediaFactory(photographer, data) {
 
 	/**
 	 * @return {{
-	 *		container: HTMLDivElement,
-	 *		icon: HTMLImageElement,
+	 *		container: HTMLButtonElement,
+	 *		icon: SVGSVGElement,
 	 *		count: HTMLElement
 	 * }}
 	 */
 	function getLikesDOM() {
-		const containerEl = document.createElement('div');
+		const containerEl = document.createElement('button');
 		containerEl.classList.add('likes');
 		containerEl.setAttribute('tabindex', window.useTabIndex());
 
 		const likesCountEl       = document.createElement('strong');
 		likesCountEl.textContent = likes.toString(10);
 
-		const heartEl = document.createElement('img');
+		const heartEl = iconsFactory()('heart');
 		heartEl.setAttribute('alt', 'likes');
-		heartEl.src = 'assets/icons/heart.svg';
 
 		containerEl.appendChild(likesCountEl);
 		containerEl.appendChild(heartEl);
@@ -136,7 +173,7 @@ export function mediaFactory(photographer, data) {
 		return { container: figcaptionEl, content: h2 };
 	}
 	/**
-	 * @param {(event: MouseEvent<HTMLAnchorElement>) => void} onClick
+	 * @param {(event: MouseEvent<HTMLAnchorElement> | KeyboardEvent<HTMLAnchorElement>) => void} onClick
 	 * @return {{
 	 *		container: HTMLElement,
 	 *		caption: {
@@ -166,7 +203,7 @@ export function mediaFactory(photographer, data) {
 	}
 
 	/**
-	 * @param {(event: MouseEvent<HTMLAnchorElement>) => void} onClick
+	 * @param {(event: MouseEvent<HTMLAnchorElement> | KeyboardEvent<HTMLAnchorElement>) => void} onClick
 	 * @return {{
 	 * 		container: HTMLElement,
 	 * 		figure: {
@@ -191,5 +228,5 @@ export function mediaFactory(photographer, data) {
 		return { container: article, figure: figureEl };
 	}
 
-	return { name, media, getMediaCardDOM, getMediaDOM };
+	return { name, media, getMediaCardDOM, getLikesDOM };
 }

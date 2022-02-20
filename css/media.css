@@ -37,6 +37,7 @@
 	object-position : center center;
 }
 .photograph-media > article > figure > figcaption {
+	font-size       : 1.5em;
 	color           : #901C1C;
 	display         : flex;
 	flex-flow       : row nowrap;
@@ -44,12 +45,17 @@
 	margin-top      : .5em;
 }
 .photograph-media > article > figure > figcaption > .likes {
-	display         : flex;
-	flex-flow       : row nowrap;
-	justify-content : center;
-	align-items     : center;
+	display          : flex;
+	flex-flow        : row nowrap;
+	justify-content  : center;
+	align-items      : center;
+
+	background-color : transparent;
+	border           : none;
+	color            : inherit;
+	cursor           : pointer;
 }
-.photograph-media > article > figure > figcaption > .likes > img {
+.photograph-media > article > figure > figcaption > .likes > svg {
 	margin-left : .5em;
 }
 .photograph-media > article > figure > figcaption > .likes > strong {
@@ -104,5 +110,6 @@
 	height    : 30px;
 	cursor    : pointer;
 
+	color     : var(--color-primary-bg);
 	transform : translateX(calc(.5 * min(100vh, 100vw) + 40px));
 }
