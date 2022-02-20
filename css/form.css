@@ -1,7 +1,8 @@
 @import 'select.css';
 
 .formData {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
+	font-size   : 1.5em;
+	display     : flex;
+	flex-flow   : row wrap;
+	align-items : center;
 }
