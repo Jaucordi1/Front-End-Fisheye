@@ -1,10 +1,8 @@
-import initAccessibility       from '../utils/accessibility.js';
 import { photographerFactory } from '../factories/photographer.js';
-import { mediaFactory }        from '../factories/media.js';
-import inputFactory            from '../factories/input.js';
-import lightboxFactory         from '../factories/lightbox.js';
-// import imageLoader             from '../utils/imageLoader.js';
-import { getContactForm }      from '../utils/contactForm.js';
+import { mediaFactory } from '../factories/media.js';
+import inputFactory from '../factories/input.js';
+import lightboxFactory from '../factories/lightbox.js';
+import { getContactForm } from '../utils/contactForm.js';
 
 /**
  * @param {IPhotographer} photographer
@@ -14,7 +12,7 @@ function displayHeaderData(photographer) {
 	const { getUserHeaderDOM } = photographerFactory(photographer);
 
 	// DOM elements
-	const photographerHeaderEl  = document.querySelector('.photograph-header');
+	const photographerHeaderEl = document.querySelector('.photograph-header');
 	const { infoEl, pictureEl } = getUserHeaderDOM();
 
 	photographerHeaderEl.prepend(infoEl);
@@ -28,7 +26,7 @@ function displayHeaderData(photographer) {
  */
 function displayContactForm(photographer) {
 	const modalContainerEl = document.getElementById('contact_modal');
-	const modalEl          = getContactForm(photographer, ({ toPhotographer, ...data }) => {
+	const modalEl = getContactForm(photographer, ({ toPhotographer, ...data }) => {
 		console.log(`Contact sent to photographer '${toPhotographer}' with data :`, data);
 	});
 
@@ -45,7 +43,7 @@ function displayFloatingData(photographer, totalLikes) {
 
 	// DOM elements
 	const photographHeader = document.querySelector('.photograph-header');
-	const floatingEl       = getUserFloatingDetailsDOM(totalLikes);
+	const floatingEl = getUserFloatingDetailsDOM(totalLikes);
 
 	photographHeader.insertAdjacentElement('afterend', floatingEl);
 }
@@ -61,22 +59,22 @@ function displayFiltersData(photographer, totalLikes, onFilterChange) {
 	const { getFormData } = inputFactory();
 
 	const sortByFormData = getFormData(
-			{
-				id     : photographer.id.toString(10),
-				type   : 'select',
-				label  : 'Trier par',
-				options: [
-					{ name: 'Popularité', value: 'likes' },
-					{ name: 'Date', value: 'date' },
-					{ name: 'Titre', value: 'title' },
-				],
-			},
-			(newValue, oldValue) => {
-				console.log('[ CHANGE ]', oldValue, '=>', newValue);
-				const isValid = newValue !== oldValue;
-				if (isValid) onFilterChange(newValue);
-				return isValid;
-			},
+		{
+			id: photographer.id.toString(10),
+			type: 'select',
+			label: 'Trier par',
+			options: [
+				{ name: 'Popularité', value: 'likes' },
+				{ name: 'Date', value: 'date' },
+				{ name: 'Titre', value: 'title' },
+			],
+		},
+		(newValue, oldValue) => {
+			console.log('[ CHANGE ]', oldValue, '=>', newValue);
+			const isValid = newValue !== oldValue;
+			if (isValid) onFilterChange(newValue);
+			return isValid;
+		},
 	);
 	filtersEl.appendChild(sortByFormData.formData);
 
@@ -91,7 +89,7 @@ function displayFiltersData(photographer, totalLikes, onFilterChange) {
  */
 function displayMediasData(photographer, medias, lightboxHelper) {
 	// DOM Elements
-	const mediasSection     = document.querySelector('.photograph-media');
+	const mediasSection = document.querySelector('.photograph-media');
 	mediasSection.innerHTML = '';
 
 	// Creating DOM medias
@@ -101,7 +99,7 @@ function displayMediasData(photographer, medias, lightboxHelper) {
 
 		// Get
 		const mediaModel = mediaFactory(photographer, media);
-		const mediaDOM   = mediaModel.getMediaCardDOM(() => {
+		const mediaDOM = mediaModel.getMediaCardDOM(() => {
 			lightboxHelper.openMedia(media.id);
 		});
 
@@ -115,14 +113,14 @@ function displayMediasData(photographer, medias, lightboxHelper) {
 
 				// Generate a new likes DOM for given media
 				const updatedModel = mediaFactory(photographer, media);
-				const newLikesDOM  = updatedModel.getLikesDOM();
+				const newLikesDOM = updatedModel.getLikesDOM();
 
 				// Replace old with new individual media likes DOM
 				container.replaceWith(newLikesDOM.container);
 
 				// Replace old with new total likes DOM
 				document.querySelector('.likes-and-pricing > :first-child').replaceWith(
-						photographerFactory(photographer).getUserPopularityDOM(likesCounter),
+					photographerFactory(photographer).getUserPopularityDOM(likesCounter),
 				);
 			});
 		}
@@ -173,16 +171,12 @@ function displayData(photographer, medias) {
 	displayFiltersData(photographer, totalLikes, (value) => {
 		console.log('Display medias');
 		displayMediasData(photographer, sortMedias(value), lightboxHelper);
-		// console.log('Display lightbox');
-		// displayLightboxData(photographer, lightboxHelper);
 	});
 }
 
 async function init() {
-	initAccessibility(1, [4]);
-
 	// Récupère l'id du photographe
-	const params         = new URL(window.location.href).searchParams;
+	const params = new URL(window.location.href).searchParams;
 	const photographerId = Number(params.get('id'));
 	if (isNaN(photographerId)) throw new Error('Oops!');
 

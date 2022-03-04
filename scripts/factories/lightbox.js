@@ -8,7 +8,8 @@ import iconsFactory from './icons.js';
  *     opened: boolean,
  *     setIndex: (idx: number) => boolean,
  *     getLightboxDOM: (photographer: IPhotographer) => {container: HTMLDivElement, next: HTMLAnchorElement, prev: HTMLAnchorElement},
- *     openMedia: (id: number) => void
+ *     openMedia: (id: number) => void,
+ *     loopNextTab: boolean
  * }} ILightbox
  */
 
@@ -26,8 +27,9 @@ export default function lightboxFactory(container, medias) {
 	const lightbox = {
 		actualIndex: undefined,
 		actualMedia: undefined,
-		lightboxEl : container,
-		opened     : false,
+		lightboxEl: container,
+		opened: false,
+		loopNextTab: false
 	};
 
 	function getLeftArrowDOM() {
@@ -75,16 +77,13 @@ export default function lightboxFactory(container, medias) {
 	 */
 	function handleKey(event) {
 		const { code, altKey, currentTarget } = event;
-		console.log('[KEYBOARD]', code, currentTarget);
+		// console.log('[KEYBOARD]', code, currentTarget);
+
 		switch (code) {
 			case 'Enter':
 			case 'Space':
 				if (currentTarget.tagName === 'A') {
-					if (currentTarget.classList.contains('left-arrow')) {
-						prevMedia();
-					} else if (currentTarget.classList.contains('right-arrow')) {
-						nextMedia();
-					} else if (currentTarget.classList.contains('close')){
+					if (currentTarget.classList.contains('close')) {
 						const mediaNavEl = lightbox.actualMedia;
 						console.log(mediaNavEl, mediaNavEl.firstElementChild.firstElementChild);
 						lightbox.setIndex(-1);
@@ -94,14 +93,26 @@ export default function lightboxFactory(container, medias) {
 				break;
 			case 'ArrowLeft':
 				if (lightbox.opened) prevMedia();
+				else console.error('Lightbox not opened!');
 				break;
 			case 'ArrowRight':
 				if (lightbox.opened) nextMedia();
+				else console.error('Lightbox not opened!');
 				break;
 			case 'Tab':
-				if (lightbox.opened && !altKey) {
-					console.log('Loop focus', lightbox.actualMedia);
+				if (lightbox.loopNextTab) {
 					lightbox.actualMedia.focus();
+					lightbox.loopNextTab = false;
+				} else if (lightbox.opened && !altKey && document.activeElement.classList.contains('close')) {
+					lightbox.loopNextTab = true;
+				}
+				break;
+			case 'Escape':
+				if (lightbox.opened) {
+					const mediaNavEl = lightbox.actualMedia;
+					console.log(mediaNavEl, mediaNavEl.firstElementChild.firstElementChild);
+					lightbox.setIndex(-1);
+					mediaNavEl.firstElementChild.firstElementChild.focus();
 				}
 				break;
 			default:
@@ -110,17 +121,16 @@ export default function lightboxFactory(container, medias) {
 		}
 	}
 	function addControls() {
-		const leftArrowEl  = getLeftArrowDOM();
+		const leftArrowEl = getLeftArrowDOM();
 		leftArrowEl.addEventListener('click', () => prevMedia());
-		leftArrowEl.addEventListener('keypress', handleKey);
 
 		const rightArrowEl = getRightArrowDOM();
 		rightArrowEl.addEventListener('click', () => nextMedia());
-		rightArrowEl.addEventListener('keypress', handleKey);
 
 		const closeEl = getCloseDOM();
 		closeEl.addEventListener('click', () => lightbox.setIndex(-1));
-		closeEl.addEventListener('keypress', handleKey);
+
+		document.addEventListener('keyup', handleKey);
 
 		lightbox.actualMedia.prepend(leftArrowEl);
 		lightbox.actualMedia.appendChild(rightArrowEl);
@@ -188,7 +198,7 @@ export default function lightboxFactory(container, medias) {
 		}
 
 		lightbox.actualIndex = idx;
-		lightbox.actualMedia = lightbox.lightboxEl.querySelector(`article:nth-child(${lightbox.actualIndex+1})`);
+		lightbox.actualMedia = lightbox.lightboxEl.querySelector(`article:nth-child(${lightbox.actualIndex + 1})`);
 
 		addControls();
 

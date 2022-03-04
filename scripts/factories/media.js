@@ -34,9 +34,9 @@ import iconsFactory from './icons.js';
 export function mediaFactory(photographer, data) {
 	const { /*id, photographerId, */title, description, image, video, likes/*, date, price*/ } = data;
 
-	const type   = image ? 'img' : 'video';
+	const type = image ? 'img' : 'video';
 	const folder = photographer.name.split(' ')[0];
-	const media  = `assets/media/${folder}/${image || video}`;
+	const media = `assets/media/${folder}/${image || video}`;
 
 	/**
 	 * @return {HTMLImageElement}
@@ -120,8 +120,8 @@ export function mediaFactory(photographer, data) {
 	function getMediaLinkDOM(onClick) {
 		const mediaEl = getMediaDOM();
 
-		const linkEl  = document.createElement('a');
-		linkEl.setAttribute('tabindex', window.useTabIndex());
+		const linkEl = document.createElement('a');
+		linkEl.setAttribute('tabindex', 0);
 		linkEl.addEventListener('click', (event) => {
 			event.preventDefault();
 			onClick(event);
@@ -145,9 +145,9 @@ export function mediaFactory(photographer, data) {
 	function getLikesDOM() {
 		const containerEl = document.createElement('button');
 		containerEl.classList.add('likes');
-		containerEl.setAttribute('tabindex', window.useTabIndex());
+		containerEl.setAttribute('tabindex', 0);
 
-		const likesCountEl       = document.createElement('strong');
+		const likesCountEl = document.createElement('strong');
 		likesCountEl.textContent = likes.toString(10);
 
 		const heartEl = iconsFactory()('heart');
@@ -163,8 +163,8 @@ export function mediaFactory(photographer, data) {
 	 * @return {{container: HTMLElement, content: HTMLHeadingElement}}
 	 */
 	function getFigcaptionDOM() {
-		const h2       = document.createElement('h2');
-		h2.setAttribute('tabindex', window.useTabIndex());
+		const h2 = document.createElement('h2');
+		h2.setAttribute('tabindex', 0);
 		h2.textContent = title;
 
 		const figcaptionEl = document.createElement('figcaption');
@@ -189,7 +189,7 @@ export function mediaFactory(photographer, data) {
 	function getFigureDOM(onClick) {
 		const mediaEl = getMediaLinkDOM(onClick);
 		const figcaptionEl = getFigcaptionDOM();
-		const likesEl      = getLikesDOM();
+		const likesEl = getLikesDOM();
 
 		figcaptionEl.container.appendChild(likesEl.container);
 		mediaEl.link.setAttribute('aria-label', `${title}, closeup view`);

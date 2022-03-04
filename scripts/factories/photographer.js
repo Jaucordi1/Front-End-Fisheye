@@ -43,13 +43,13 @@ export function photographerFactory(data) {
 		const imgEl = getUserPictureDOM();
 
 		// Creating photographer name
-		const nameEl       = document.createElement('h2');
+		const nameEl = document.createElement('h2');
 		nameEl.textContent = name;
 
 		// Wrapping photographer's name & picture in a link
 		const linkEl = document.createElement('a');
 		linkEl.setAttribute('href', `photographer.html?id=${id}`);
-		linkEl.setAttribute('tabindex', window.useTabIndex());
+		linkEl.setAttribute('tabindex', 0);
 		linkEl.appendChild(imgEl);
 		linkEl.appendChild(nameEl);
 
@@ -62,7 +62,7 @@ export function photographerFactory(data) {
 
 		// Wrapping photographer's location, bio & cost-per-day in a paragraph
 		const paragraphEl = document.createElement('p');
-		paragraphEl.setAttribute('tabindex', window.useTabIndex());
+		paragraphEl.setAttribute('tabindex', 0);
 		paragraphEl.appendChild(locationEl);
 		paragraphEl.appendChild(taglineEl);
 		paragraphEl.appendChild(costEl);
@@ -83,7 +83,7 @@ export function photographerFactory(data) {
 	function getUserHeaderDOM() {
 		const titleEl = document.createElement('h1');
 		titleEl.textContent = name;
-		titleEl.setAttribute('tabindex', window.useTabIndex());
+		titleEl.setAttribute('tabindex', 0);
 
 		const locationEl = getUserLocationDOM();
 		const tagLineEl = getUserTagLineDOM();
@@ -96,12 +96,12 @@ export function photographerFactory(data) {
 
 		const detailsEl = document.createElement('p');
 		detailsEl.classList.add('photograph-information-details');
-		detailsEl.setAttribute('tabindex', window.useTabIndex());
+		detailsEl.setAttribute('tabindex', 0);
 		detailsEl.appendChild(locationEl);
 		detailsEl.appendChild(tagLineEl);
 		infoEl.appendChild(detailsEl);
 
-		pictureEl.setAttribute('tabindex', window.useTabIndex());
+		pictureEl.setAttribute('tabindex', 0);
 		pictureEl.setAttribute('alt', name);
 
 		return { infoEl, pictureEl };
@@ -123,7 +123,7 @@ export function photographerFactory(data) {
 
 		const floatingEl = document.createElement('div');
 		floatingEl.classList.add('likes-and-pricing');
-		floatingEl.setAttribute('tabindex', window.useTabIndex());
+		floatingEl.setAttribute('tabindex', 0);
 
 		floatingEl.appendChild(popularityEl);
 		floatingEl.appendChild(pricingEl);

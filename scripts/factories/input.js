@@ -1,6 +1,6 @@
 const defaultCallbacks = {
 	onSuccess: (data) => console.log('[DEFAULT][FORM] onSuccess', data),
-	onError  : (error) => console.error('[DEFAULT][FORM] onError', error),
+	onError: (error) => console.error('[DEFAULT][FORM] onError', error),
 };
 
 /**
@@ -52,7 +52,7 @@ export default function inputFactory() {
 		const labelEl = document.createElement('label');
 		labelEl.classList.add('combo-label');
 		labelEl.setAttribute('id', 'listbox-' + id + '-label');
-		labelEl.setAttribute('tabindex', window.useTabIndex());
+		labelEl.setAttribute('tabindex', 0);
 		labelEl.textContent = label;
 
 		const comboEl = document.createElement('div');
@@ -66,7 +66,7 @@ export default function inputFactory() {
 		comboboxEl.setAttribute('aria-expanded', 'false');
 		comboboxEl.setAttribute('aria-haspopup', 'listbox');
 		comboboxEl.setAttribute('aria-labelledby', 'listbox-' + id + '-label');
-		comboboxEl.setAttribute('tabindex', window.useTabIndex());
+		comboboxEl.setAttribute('tabindex', 0);
 		comboboxEl.textContent = options[0].name;
 
 		const listboxEl = document.createElement('div');
@@ -74,7 +74,7 @@ export default function inputFactory() {
 		listboxEl.setAttribute('id', 'listbox-' + id + '-menu');
 		listboxEl.setAttribute('role', 'listbox');
 		listboxEl.setAttribute('aria-labelledby', 'listbox-' + id + '-label');
-		listboxEl.setAttribute('tabindex', window.useTabIndex());
+		listboxEl.setAttribute('tabindex', 0);
 
 		function focusCurrent() {
 			const actual = listboxEl.querySelector('.current-selected');
@@ -148,9 +148,9 @@ export default function inputFactory() {
 			optionEl.classList.add('combo-option');
 			optionEl.setAttribute('id', 'listbox-' + id + '-item-' + (i + 1));
 			optionEl.setAttribute('role', 'option');
-			optionEl.setAttribute('tabindex', window.useTabIndex());
+			optionEl.setAttribute('tabindex', 0);
 			optionEl.dataset.value = value;
-			optionEl.textContent   = name;
+			optionEl.textContent = name;
 			optionEl.addEventListener('click', (event) => selectOption(event.currentTarget));
 			optionEl.addEventListener('keypress', (event) => {
 				console.log('OPT LISTENER');
@@ -226,7 +226,7 @@ export default function inputFactory() {
 		const labelEl = document.createElement('label');
 		labelEl.setAttribute('for', id);
 		labelEl.textContent = label;
-		labelEl.setAttribute('tabindex', window.useTabIndex());
+		labelEl.setAttribute('tabindex', 0);
 
 		if (type === 'select') {
 			const { label, listbox } = getListBoxDOM(opt.id, opt.label, opt.options || [], onChange);
@@ -235,8 +235,8 @@ export default function inputFactory() {
 
 			return {
 				formData: containerEl,
-				input   : listbox,
-				label   : label,
+				input: listbox,
+				label: label,
 			};
 		}
 
@@ -275,7 +275,7 @@ export default function inputFactory() {
 		inputEl.setAttribute('id', id);
 		inputEl.setAttribute('name', id);
 		inputEl.setAttribute('value', defaultValue);
-		inputEl.setAttribute('tabindex', window.useTabIndex());
+		inputEl.setAttribute('tabindex', 0);
 
 		inputEl.addEventListener('change', (event) => onChange(event.currentTarget.value));
 
@@ -284,8 +284,8 @@ export default function inputFactory() {
 
 		return {
 			formData: containerEl,
-			label   : labelEl,
-			input   : inputEl,
+			label: labelEl,
+			input: inputEl,
 		};
 	}
 
