@@ -1,8 +1,3 @@
-const defaultCallbacks = {
-	onSuccess: (data) => console.log('[DEFAULT][FORM] onSuccess', data),
-	onError: (error) => console.error('[DEFAULT][FORM] onError', error),
-};
-
 /**
  * @typedef {'button' | 'checkbox' | 'color' | 'date' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'} HTMLInputType
  * @typedef {HTMLInputType | 'textarea' | 'select'} FormDataType
@@ -153,7 +148,6 @@ export default function inputFactory() {
 			optionEl.textContent = name;
 			optionEl.addEventListener('click', (event) => selectOption(event.currentTarget));
 			optionEl.addEventListener('keypress', (event) => {
-				console.log('OPT LISTENER');
 				event.preventDefault();
 				const { code } = event;
 
@@ -169,7 +163,7 @@ export default function inputFactory() {
 							selectOption(event.currentTarget);
 						break;
 					default:
-						console.log('Doing nothing for key :', code);
+						// console.log('Doing nothing for key :', code);
 						break;
 				}
 
@@ -197,7 +191,7 @@ export default function inputFactory() {
 					event.preventDefault();
 					return openListbox();
 				default:
-					console.log('CODE :', code);
+					// console.log('CODE :', code);
 					break;
 			}
 		});
