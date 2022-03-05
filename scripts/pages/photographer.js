@@ -146,14 +146,10 @@ function displayData(photographer, medias) {
 			switch (prop) {
 				case 'likes':
 				case 'date':
-					if (v1 > v2) return -1;
-					else if (v1 < v2) return 1;
-					else return 0;
+					return v1 > v2 ? -1 : (v1 < v2);
 				case 'title':
 				default:
-					if (v1 > v2) return 1;
-					else if (v1 < v2) return -1;
-					else return 0;
+					return v1 < v2 ? -1 : (v1 > v2);
 			}
 		});
 	}
@@ -169,7 +165,6 @@ function displayData(photographer, medias) {
 	const lightboxHelper = lightboxFactory(document.querySelector('.photograph-media'), medias);
 
 	displayFiltersData(photographer, totalLikes, (value) => {
-		console.log('Display medias');
 		displayMediasData(photographer, sortMedias(value), lightboxHelper);
 	});
 }

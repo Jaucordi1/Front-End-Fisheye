@@ -3,13 +3,13 @@
 
 h1 {
 	color        : #901C1C;
-	font-size    : 36px;
-	line-height  : 47px;
+	font-size    : 3.6em;
+	line-height  : 4.7em;
 	margin-right : 100px;
 }
 
 #main {
-	height: calc(100vh - 130px);
+	min-height: calc(100vh - 130px);
 	display         : flex;
 	flex-flow       : column nowrap;
 	justify-content : center;
@@ -19,7 +19,7 @@ h1 {
 .photographer_section {
 	display               : grid;
 	grid-template-columns : 1fr 1fr 1fr;
-	gap                   : 70px;
+	gap                   : 7em;
 }
 
 .photographer_section article {
@@ -67,4 +67,16 @@ h1 {
 	color       : #757575;
 	font-size   : 9px;
 	line-height : 12px;
+}
+
+@media (max-width: 575px) {
+	h1 {
+		font-size: 3em;
+		line-height: 2.5em;
+		margin: 0;
+	}
+	.photographer_section {
+		grid-template-columns : 1fr;
+		margin-bottom: 3em;
+	}
 }

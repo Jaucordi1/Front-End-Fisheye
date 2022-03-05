@@ -3,10 +3,21 @@ body > header {
 	flex-flow       : row nowrap;
 	justify-content : space-between;
 	align-items     : center;
-	height          : 130px;
+	height          : 13em;
 }
 
 .logo {
-	height      : 50px;
-	margin-left : 100px;
+	height      : 5em;
+	margin-left : 10em;
+}
+@media (max-width: 575px) {
+	body > header {
+		flex-direction: column;
+		justify-content: center;
+		height: auto;
+		margin-bottom: 3em;
+	}
+	.logo {
+		margin: 3em 0 0 0;
+	}
 }

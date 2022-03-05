@@ -6,3 +6,9 @@
 	flex-flow   : row wrap;
 	align-items : center;
 }
+
+.formData > input,
+.formData > textarea {
+	font-size: 1.5em;
+	padding: .5em .8em;
+}

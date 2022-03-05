@@ -8,11 +8,13 @@
 
 html {
 	font-size : 61.25%;
+	width: 100%;
 }
 body {
 	font-size : 1rem;
 	display   : flex;
 	flex-flow : column nowrap;
+	width: 100%;
 }
 
 button {

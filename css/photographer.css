@@ -86,3 +86,50 @@
 	border-radius    : 5px;
 	cursor           : pointer;
 }
+
+@media (max-width: 575px) {
+	#main {
+		margin: 0 0 3em 0;
+	}
+	.photograph-header {
+		grid-template-columns: 1fr;
+		justify-items         : stretch;
+		align-items           : center;
+		height: auto;
+	}
+	.photograph-header > * {
+		text-align: center;
+	}
+	.photograph-header > img {
+		order: 0;
+		margin: 0 auto;
+	}
+	.photograph-header > .photograph-information {
+		order: 1;
+		align-items: center;
+		margin: 0 auto;
+	}
+	.photograph-header > .contact_button {
+		order: 2;
+		margin: 1em auto;
+	}
+
+	.likes-and-pricing {
+		left: 0;
+		right: 0;
+		margin: 0;
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: space-between;
+	}
+
+	.photograph-media-filters {
+		display: flex;
+		flex-flow: column nowrap;
+		align-items: center;
+	}
+	.photograph-media-filters > .formData {
+		flex-direction: column;
+		row-gap: .5em;
+	}
+}

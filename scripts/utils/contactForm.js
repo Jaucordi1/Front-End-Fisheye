@@ -1,6 +1,6 @@
 import iconsFactory from '../factories/icons.js';
 import inputFactory from '../factories/input.js';
-import formFactory  from '../factories/form.js';
+import formFactory from '../factories/form.js';
 
 /**
  * @typedef {{
@@ -56,61 +56,61 @@ export function getContactForm(photographer, onSubmit) {
 	modalTitleEl.setAttribute('id', 'contact-modal-title');
 	modalTitleEl.textContent = 'Contactez-moi ' + photographer.name;
 	// Header > Title element
-	const modalHeaderEl      = document.createElement('header');
+	const modalHeaderEl = document.createElement('header');
 	modalHeaderEl.appendChild(modalTitleEl);
 
 	// Form elements
-	const formData         = {
+	const formData = {
 		toPhotographer: photographer.id,
-		firstname     : undefined,
-		lastname      : undefined,
-		email         : undefined,
-		message       : undefined,
+		firstname: undefined,
+		lastname: undefined,
+		email: undefined,
+		message: undefined,
 	};
 	const formDataElements = [
 		{
-			opt     : {
-				id   : 'firstname',
+			opt: {
+				id: 'firstname',
 				label: 'Prénom',
-				type : 'text',
+				type: 'text',
 			},
 			onChange: (value) => {
 				formData.firstname = value;
 			},
 		},
 		{
-			opt     : {
-				id   : 'lastname',
+			opt: {
+				id: 'lastname',
 				label: 'Nom',
-				type : 'text',
+				type: 'text',
 			},
 			onChange: (value) => {
 				formData.lastname = value;
 			},
 		},
 		{
-			opt     : {
-				id   : 'email',
+			opt: {
+				id: 'email',
 				label: 'Email',
-				type : 'email',
+				type: 'email',
 			},
 			onChange: (value) => {
 				formData.email = value;
 			},
 		},
 		{
-			opt     : {
-				id   : 'message',
+			opt: {
+				id: 'message',
 				label: 'Votre message',
-				type : 'textarea',
+				type: 'textarea',
 			},
 			onChange: (value) => {
 				formData.message = value;
 			},
 		},
 	].map(({ opt, onChange }) => inputFactory().getFormData(opt, onChange));
-	formDataElements[formDataElements.length - 1].input.setAttribute('rows', '10');
-	const modalForm   = formFactory(formDataElements);
+	formDataElements[formDataElements.length - 1].input.setAttribute('rows', '6');
+	const modalForm = formFactory(formDataElements);
 	const modalFormEl = modalForm.getFormDOM();
 
 	// Close button element
@@ -125,15 +125,11 @@ export function getContactForm(photographer, onSubmit) {
 
 	// Bind events
 	modalOpenerEl.addEventListener('click', displayModal);
-	// modalOpenerEl.addEventListener('keypress', (event) => event.code === 'Enter' ? displayModal(event, modalContainerEl) : event.preventDefault());
-
 	modalFormEl.addEventListener('submit', (event) => {
 		event.preventDefault();
-		onSubmit(/** @type {IContactFormData} */ formData);
+		onSubmit(formData);
 	});
-
 	closeButtonEl.addEventListener('click', closeModal);
-	// closeButtonEl.addEventListener('keypress', (event) => event.code === 'Enter' ? closeModal(event, modalContainerEl) : event.preventDefault());
 
 	return modalEl;
 }

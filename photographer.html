@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<link type="text/css" href="./css/photographer.css" rel="stylesheet" />
-		<meta charset="utf-8" />
-		<link type="image/png" href="./assets/favicon.png" rel="icon" />
-		<link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet" />
 
-		<title>Fisheye - photographe</title>
-	</head>
-	<body>
-		<header>
-			<a href="./index.html" aria-labelledby="logo" tabindex="0">
-				<img class="logo" id="logo" src="./assets/images/logo.png" alt="Fisheye Home page" />
-			</a>
-		</header>
+<head>
+	<link type="text/css" href="./css/photographer.css" rel="stylesheet" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link type="image/png" href="./assets/favicon.png" rel="icon" />
+	<link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet" />
 
-		<main id="main">
-			<div class="photograph-header">
-				<button class="contact_button" aria-haspopup="dialog" aria-controls="contact_modal" aria-expanded="false">Contactez-moi</button>
-			</div>
-			<div class="photograph-media-filters"></div>
-			<div class="photograph-media"></div>
-		</main>
+	<title>Fisheye - photographe</title>
+</head>
 
-		<div id="contact_modal"></div>
+<body>
+	<header>
+		<a href="./index.html" aria-labelledby="logo" tabindex="0">
+			<img class="logo" id="logo" src="./assets/images/logo.png" alt="Fisheye Home page" />
+		</a>
+	</header>
 
-		<script type="module" src="./scripts/pages/photographer.js"></script>
-	</body>
+	<main id="main">
+		<div class="photograph-header">
+			<button class="contact_button" aria-haspopup="dialog" aria-controls="contact_modal"
+				aria-expanded="false">Contactez-moi</button>
+		</div>
+		<div class="photograph-media-filters"></div>
+		<div class="photograph-media"></div>
+	</main>
+
+	<div id="contact_modal"></div>
+	<script type="module" src="./scripts/pages/photographer.js"></script>
+</body>
+
 </html>

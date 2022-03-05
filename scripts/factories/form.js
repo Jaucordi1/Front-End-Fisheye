@@ -1,10 +1,3 @@
-/*const defaultCallbacks = {
-	onSuccess: (data) => console.log('[DEFAULT][FORM] onSuccess', data),
-	onError: (error) => console.error('[DEFAULT][FORM] onError', error),
-};*/
-
-import inputFactory from './input.js';
-
 /**
  * @param {IFormData[]} inputs
  * @return {{
@@ -18,7 +11,6 @@ export default function formFactory(inputs = []) {
 		const formEl = document.createElement('form');
 
 		for (const input of inputs) {
-			console.log(input.label.textContent, input);
 			formEl.appendChild(input.formData);
 		}
 
@@ -31,5 +23,5 @@ export default function formFactory(inputs = []) {
 		return formEl;
 	}
 
-	return {getFormDOM};
+	return { getFormDOM };
 }
