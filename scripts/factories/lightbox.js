@@ -76,47 +76,48 @@ export default function lightboxFactory(container, medias) {
 	 * @param {KeyboardEvent} event
 	 */
 	function handleKey(event) {
-		const { code, altKey, currentTarget } = event;
+		const { code, altKey } = event;
+		const { activeElement } = document;
 		// console.log('[KEYBOARD]', code, currentTarget);
 
 		switch (code) {
 			case 'Enter':
 			case 'Space':
-				if (currentTarget.tagName === 'A') {
-					if (currentTarget.classList.contains('close')) {
+				if (activeElement.tagName === 'A') {
+					if (activeElement.classList.contains('close')) {
 						const mediaNavEl = lightbox.actualMedia;
-						console.log(mediaNavEl, mediaNavEl.firstElementChild.firstElementChild);
 						lightbox.setIndex(-1);
 						mediaNavEl.firstElementChild.firstElementChild.focus();
+					} else if (activeElement.classList.contains('left-arrow')) {
+						prevMedia();
+					} else if (activeElement.classList.contains('right-arrow')) {
+						nextMedia();
 					}
 				}
 				break;
 			case 'ArrowLeft':
 				if (lightbox.opened) prevMedia();
-				else console.error('Lightbox not opened!');
 				break;
 			case 'ArrowRight':
 				if (lightbox.opened) nextMedia();
-				else console.error('Lightbox not opened!');
 				break;
 			case 'Tab':
 				if (lightbox.loopNextTab) {
 					lightbox.actualMedia.focus();
 					lightbox.loopNextTab = false;
-				} else if (lightbox.opened && !altKey && document.activeElement.classList.contains('close')) {
+				} else if (lightbox.opened && !altKey && activeElement.classList.contains('close')) {
 					lightbox.loopNextTab = true;
 				}
 				break;
 			case 'Escape':
 				if (lightbox.opened) {
 					const mediaNavEl = lightbox.actualMedia;
-					console.log(mediaNavEl, mediaNavEl.firstElementChild.firstElementChild);
 					lightbox.setIndex(-1);
 					mediaNavEl.firstElementChild.firstElementChild.focus();
 				}
 				break;
 			default:
-				console.log(code + ' key pressed');
+				// console.log(code + ' key pressed');
 				break;
 		}
 	}
@@ -138,8 +139,6 @@ export default function lightboxFactory(container, medias) {
 	}
 
 	function prevMedia() {
-		console.debug('[LIGHTBOX] Previous media triggered');
-
 		let prevIdx = lightbox.actualIndex - 1;
 		if (prevIdx < 0) prevIdx = medias.length - 1;
 
@@ -148,8 +147,6 @@ export default function lightboxFactory(container, medias) {
 		lightbox.openMedia(media.id);
 	}
 	function nextMedia() {
-		console.debug('[LIGHTBOX] Next media triggered');
-
 		let nextIdx = lightbox.actualIndex + 1;
 		if (nextIdx >= medias.length) nextIdx = 0;
 
@@ -164,6 +161,7 @@ export default function lightboxFactory(container, medias) {
 
 		// Destroy actual lightbox controls & restore previous media css
 		if (lightbox.actualIndex !== undefined) {
+			document.removeEventListener('keyup', handleKey);
 			lightbox.actualMedia.classList.remove('opened');
 			lightbox.actualMedia.removeAttribute('aria-label');
 			/** Reset tabindexes! */
