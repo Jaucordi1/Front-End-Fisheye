@@ -230,6 +230,7 @@ export default function lightboxFactory(container, medias) {
 	}
 	function closeLightbox() {
 		lightbox.opened = false;
+		lightbox.loopNextTab = false;
 		document.body.style.overflow = 'auto'; // restore whole document scrolling behavior
 	}
 
