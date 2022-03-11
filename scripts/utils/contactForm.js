@@ -17,7 +17,8 @@ export function displayModal(event = undefined, modal = undefined) {
 
 	if (!modal) modal = document.getElementById('contact_modal');
 
-	modal.style.display = 'flex';
+	if (!modal.classList.contains('show'))
+		modal.classList.add('show');
 	document.body.style.overflow = 'hidden';
 
 	modal.firstElementChild.focus();
@@ -29,7 +30,8 @@ export function closeModal(event = undefined, modal = undefined) {
 	if (!modal)
 		modal = document.getElementById('contact_modal');
 
-	modal.style.display = 'none';
+	if (modal.classList.contains('show'))
+		modal.classList.remove('show');
 	document.body.style.overflow = 'auto';
 
 	document.querySelector('#main > .photograph-header > .contact_button').focus();
